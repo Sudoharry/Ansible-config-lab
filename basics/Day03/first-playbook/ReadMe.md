@@ -1,3 +1,6 @@
+# Write a playbook to install Apache2 & deploy the static website on EC2 Instance
+
+
 ## Ansible Inventory files 
 ![1](https://github.com/user-attachments/assets/7e06a10d-ba32-46ef-9a3e-ff99fb9a67c3)
 

@@ -1,6 +1,8 @@
 ---
 - hosts: all
   become: true
+  roles:
+    - httpd
   tasks:
     - name: Install apache httpd
       ansible.builtin.apt:

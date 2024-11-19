@@ -1,0 +1,16 @@
+---
+# tasks file for ec2
+
+- name: start an instance with a public IP address
+  amazon.aws.ec2_instance:
+    name: "public-compute-instance"
+    key_name: "harryb"
+    vpc_subnet_id: subnet-0d00acbc704f9d27d
+    instance_type: t2.micro
+    security_group: sg-078f3961dbc74badb
+    region: ap-south-1
+    network_interfaces:
+      - assign_public_ip: true
+    image_id: ami-0dee22c13ea7a9a67
+    tags:
+      Environment: Testing

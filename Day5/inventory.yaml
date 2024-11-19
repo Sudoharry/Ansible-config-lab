@@ -1,0 +1,8 @@
+#[app]
+#ubuntu@13.233.151.160
+
+#[db]
+#ubuntu@3.108.215.254
+
+[local]
+localhost ansible_connection=local

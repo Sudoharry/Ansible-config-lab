@@ -1,0 +1,44 @@
+---
+- name: Deploy Static Website on Nginx
+  hosts: webservers
+  become: yes  # Ensure that the playbook is executed with sudo privileges
+  tasks:
+
+    - name: Install Nginx if not installed
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Create directory for website content
+      file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+
+    - name: Create css directory    #As css directory was not created, so this task was added after error appears while running the playbook.
+      file:
+        path: /var/www/html/css
+        state: directory
+        mode: '0755'
+
+    - name: Copy HTML files to the server
+      copy:
+        src: /home/ubuntu/Ansible/Day11/Task3/index.html  # Path to your HTML file on the control node
+        dest: /var/www/html/index.html  # Destination on the remote server
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Copy CSS files to the server
+      copy:
+        src: /home/ubuntu/Ansible/Day11/Task3/style.css  # Path to your CSS file on the control node
+        dest: /var/www/html/css/style.css  # Destination on the remote server
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Restart Nginx service
+      service:
+        name: nginx
+        state: restarted

@@ -1,0 +1,23 @@
+---
+- name: Manage users and groups
+  hosts: all
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Create a group
+      group:
+        name: devops
+
+    - name: Add users and set passwords
+      user:
+        name: "{{ item.name }}"
+        group: devops
+        password: "{{ item.password | password_hash ('sha512') }}"
+      loop:
+        - { name: user1, password: "{{ password1 }}" }
+        - { name: user2, password: "{{ password2 }}" }
+
+    - name: Debug password1
+      debug:
+        msg: "{{ password1 }}"

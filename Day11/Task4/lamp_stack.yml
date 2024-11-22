@@ -1,0 +1,73 @@
+---
+- name: Install and configure LAMP stack
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Apache, MySQL, and PHP
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - apache2
+        - mysql-server
+        - php
+        - libapache2-mod-php
+        - php-mysql
+
+    - name: Start Apache service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Set MySQL root password
+      mysql_user:
+        name: root
+        password: "your_root_password"
+        host: localhost
+        state: present
+      become: yes
+      when: ansible_facts['distribution'] == 'Ubuntu'
+
+    - name: Update MySQL root user authentication to use mysql_native_password
+      mysql_user:
+        name: root
+        host: localhost
+        password: "your_root_password"
+        login_user: root
+        login_password: ""
+        state: present
+      become: yes
+
+    - name: Create MySQL database
+      mysql_db:
+        name: test_db
+        state: present
+      become: yes
+
+    - name: Create MySQL user
+      mysql_user:
+        name: test_user
+        password: "your_password"
+        priv: "test_db.*:ALL"
+        state: present
+      become: yes
+
+    - name: Deploy PHP test script
+      copy:
+        dest: /var/www/html/info.php
+        content: |
+          <?php
+          phpinfo();
+          ?>
+        owner: www-data
+        group: www-data
+        mode: '0644'
+

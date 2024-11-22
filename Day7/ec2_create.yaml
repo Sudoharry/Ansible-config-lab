@@ -1,12 +1,12 @@
---- 
-- hosts: localhost
-  connection: local
+---
+ - hosts: localhost
+   connection: local
 
-  tasks:
-  - name: start an instance with a public IP address
-    amazon.aws.ec2_instance:
-      name: "Project-day07"
-       key_name: "harryb"
+   tasks:
+   - name: start an instance with a public IP address
+     amazon.aws.ec2_instance:
+      name: "{{ item.name }}"
+      key_name: "harryb"
       # vpc_subnet_id: subnet-013744e41e8088axx
       instance_type: t2.micro
       security_group: default
@@ -15,7 +15,9 @@
       aws_secret_key: "{{ec2_secret_key}}"  # From vault as defined      
       network:
         assign_public_ip: true
-      image_id: ami-0dee22c13ea7a9a67
+      image_id: "{{ item.image }}"
 
-
-
+     loop:
+     - { image: "ami-0dee22c13ea7a9a67", name: "manage-node-1" }
+     - { image: "ami-0dee22c13ea7a9a67", name: "manage-node-2" }
+     - { image: "ami-0dee22c13ea7a9a67", name: "manage-node-3" }

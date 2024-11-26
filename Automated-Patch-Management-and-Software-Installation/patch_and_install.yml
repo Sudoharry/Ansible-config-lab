@@ -3,38 +3,60 @@
   hosts: all
   become: yes
   tasks:
-  - name: Update all packages to the latest version
-    ansible.builtin.yum:
-       name: "*"
-       state: latest
-    register: update_result
+    - name: Update all packages to the latest version
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: yes
+        state: latest
+      register: update_result
 
-  - name: Install required software
-    ansible.builtin.yum:
-       name: 
-         -  docker
-         -  nginx
-       state: present
+    - name: Gather the Ubuntu release codename
+      ansible.builtin.set_fact:
+        ubuntu_codename: "{{ ansible_facts.lsb.codename }}"
 
+    - name: Add Docker GPG key to trusted sources
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/trusted.gpg.d/docker.asc
+      become: yes
 
-  - name: Restart services if necessary
-    ansible.builtin.systemd:
-      name: "{{ item }}"
-      state: restarted
-    loop: 
-       - docker
-       - nginx
+    - name: Add Docker repository on Ubuntu-based systems
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts.lsb.codename }} stable"
+        state: present
+      when: ansible_facts.pkg_mgr == "apt"
 
-    when: update_result.changed 
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+      become: yes
 
-  - name: Ensure /var/log exits
-    ansible.builtin.file:
-      path: /var/log
-      state: directory
-      mode: '0755'  
+    - name: Install required software (docker and nginx)
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - nginx
+        state: present
+      become: yes
 
-  - name: Log the updates results
-    ansible.builtin.copy:
-     content: "{{ update_result | to_nice_yaml }}"
-     dest: "/var/log/ansible_patch_{{ inventory_hostname }}.log"
+    - name: Restart services if necessary
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - docker
+        - nginx
+      when: update_result.changed
 
+    - name: Ensure /var/log exists
+      ansible.builtin.file:
+        path: /var/log
+        state: directory
+        mode: '0755'
+
+    - name: Log the updates results
+      ansible.builtin.copy:
+        content: "{{ update_result | to_nice_yaml }}"
+        dest: "/var/log/ansible_patch_{{ inventory_hostname }}.log"

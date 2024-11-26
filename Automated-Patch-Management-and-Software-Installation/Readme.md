@@ -158,3 +158,9 @@
 - Installed and updated packages.
 - Docker and Nginx configured and running.
 - Log files in /var/log for review and troubleshooting.
+
+ ## Screenshot
+ ![Playbook-run](https://github.com/user-attachments/assets/90a64852-1cfc-4875-b0ee-da550a579ab1)
+ ![Step-wise -guide](https://github.com/user-attachments/assets/15ad0c28-6eef-4cb1-b449-309f28da8e6f)
+ ![3-Servers](https://github.com/user-attachments/assets/796ab5b6-fb41-4b2f-9deb-d61583142b70)
+

@@ -11,7 +11,7 @@ This guide documents the troubleshooting steps and practices for resolving issue
 5. [Add Docker Repository](#5-add-docker-repository)
 6. [Install Docker and Nginx](#6-install-docker-and-nginx)
 7. [Restart Services If Necessary](#7-restart-services-if-necessary)
-8. [Ensure /var/log Exists](#8-ensure-/var/log-exists)
+8. [Ensure /var/log Exists](#8-ensure-var-log-exists)
 9. [Log the Update Results](#9-log-the-update-results)
 10. [Directory Creation for Logs](#10-directory-creation-for-logs)
 ---

@@ -5,7 +5,7 @@ This guide documents the troubleshooting steps and practices for resolving issue
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
-2. [Update Packages](#2-update-packages)
+2. [ Update Packages](#2-update-packages)
 3. [Gather Ubuntu Release Codename](#3-gather-ubuntu-release-codename)
 4. [Add Docker GPG Key](#4-add-rocker-gpg-key)
 5. [Add Docker Repository](#5-add-docker-repository)

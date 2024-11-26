@@ -4,18 +4,20 @@ This guide documents the troubleshooting steps and practices for resolving issue
 
 ## Table of Contents
 
-1. [Introduction](#1-introduction)
-2. [ Update Packages](#2-update-packages)
-3. [Gather Ubuntu Release Codename](#3-gather-ubuntu-release-codename)
-4. [Add Docker GPG Key](#4-add-rocker-gpg-key)
-5. [Add Docker Repository](#5-add-docker-repository)
-6. [Update APT Cache](#6-update-apt-cache)
-7. [Install Required Software](#7-install-required-software)
-8. [Restart Services](#8-restart-services)
-9. [Ensure Log Directory Exists](#9-ensure-log-directory-exists)
-10. [Log Update Results](#10-log-update-results)
-11. [Execution](#11-execution)
-12. [Output](#12-output)
+1. [Introduction](#introduction)
+2. [Update Packages](#update-all-packages-to-the-latest-version)
+3. [Gather Ubuntu Release Codename](#gather-ubuntu-release-codename)
+4. [Add Docker GPG Key](#add-docker-gpg-key-to-trusted-sources)
+5. [Add Docker Repository](#add-docker-repository-on-ubuntu-based-systems)
+6. [Update APT Cache](#update-apt-cache)
+7. [Install Required Software](#install-required-software-docker-and-nginx)
+8. [Restart Services](#restart-services-if-necessary)
+9. [Ensure Log Directory Exists](#ensure-log-directory-exists)
+10. [Log Update Results](#log-update-results)
+11. [Execution](#execution)
+12. [Output](#output)
+13. [License](#license)
+
 ---
 
 ## Introduction

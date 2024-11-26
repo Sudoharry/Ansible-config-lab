@@ -8,7 +8,7 @@ This guide documents the troubleshooting steps and practices for resolving issue
 2. [Update Apt Cache](#2-update-apt-cache)
 3. [Correct Docker Repository Configuration](#3-correct-docker-repository-configuration)
 4. [Add Docker GPG Key](#4-add-docker-gpg-key)
-5. [Correct Docker Package Names](#5-correct-docker-package-names)
+5. [Add Docker Repository](#5-add-docker-repository)
 6. [Ensure Proper Docker Installation](#6-ensure-proper-docker-installation)
 7. [Check Repository Availability](#7-check-repository-availability)
 8. [Manual Debugging of Package Installation](#8-manual-debugging-of-package-installation)

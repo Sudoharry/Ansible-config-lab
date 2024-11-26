@@ -43,7 +43,7 @@ Docker or Nginx packages not found during installation.
 Ran the `apt update` command to refresh package sources and ensure the latest package lists were available.
 
 ### **Details**:
-```yaml
+yaml
 ansible.builtin.apt:
   update_cache: yes
 
@@ -58,7 +58,7 @@ We added the Docker repository using `ansible.builtin.apt_repository`. The repos
 ### **Details**:
 To avoid repository misconfigurations, we ensured the repository configuration was dynamic by using `ansible_facts.lsb.codename` to automatically pick the correct Ubuntu release codename.
 
-```yaml
+yaml
 ansible.builtin.apt_repository:
   repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts.lsb.codename }} stable"
   state: present
@@ -76,7 +76,7 @@ The GPG key is necessary for ensuring the authenticity of the Docker packages th
 ### **Details**:
 In this step, we ensured the Docker GPG key was correctly added to the trusted list by using the following Ansible task:
 
-```yaml
+yaml
 ansible.builtin.get_url:
   url: https://download.docker.com/linux/ubuntu/gpg
   dest: /etc/apt/trusted.gpg.d/docker.asc
@@ -92,7 +92,7 @@ The Docker repository was added to the system’s APT sources list using the `an
 ### **Details**:
 In this step, the Docker repository URL was dynamically configured to match the system’s Ubuntu codename (e.g., "bionic", "focal", etc.). The repository was added with the `signed-by` option that links the Docker GPG key to ensure security.
 
-```yaml
+yaml
 ansible.builtin.apt_repository:
   repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts.lsb.codename }} stable"
   state: present
@@ -108,7 +108,7 @@ The Docker and Nginx packages were installed using the `ansible.builtin.apt` mod
 ### **Details**:
 In this step, the installation of Docker and Nginx was triggered by using the `apt` module to install the required software. The playbook ensures that both Docker and Nginx are present on the system. The task is designed to only install the packages if they are not already installed or if they are out of date.
 
-```yaml
+yaml
 ansible.builtin.apt:
   name:
     - docker
@@ -123,7 +123,7 @@ After updating or installing packages (such as Docker and Nginx), the services m
 ### **Action Taken**:
 The playbook checks if any updates were made to the packages (via the `update_result` variable) and restarts the Docker and Nginx services if changes were detected. This ensures that the services are running the latest version after an update.
 
-```yaml
+yaml
 - name: Restart services if necessary
   ansible.builtin.systemd:
     name: "{{ item }}"
@@ -141,7 +141,7 @@ The `/var/log` directory is a crucial part of the system, where logs for various
 ### **Action Taken**:
 The playbook checks if the `/var/log` directory exists. If it does not exist, the playbook creates the directory with appropriate permissions. This ensures that logging can occur without errors and that the system has a valid location for logs.
 
-```yaml
+yaml
 - name: Ensure /var/log exists
   ansible.builtin.file:
     path: /var/log
@@ -156,7 +156,7 @@ When running automated patch management or system updates, it's essential to cap
 ### **Action Taken**:
 The playbook uses the `ansible.builtin.copy` module to log the results of the update process into a log file. The result is stored in a human-readable YAML format for clarity. This provides an audit trail of the changes made during the update process, which is crucial for debugging or reviewing update histories.
 
-```yaml
+yaml
 - name: Log the updates results
   ansible.builtin.copy:
     content: "{{ update_result | to_nice_yaml }}"
@@ -171,7 +171,7 @@ During system maintenance or software installations, certain directories, such a
 ### **Action Taken**:
 The playbook uses the `ansible.builtin.file` module to verify that the `/var/log` directory exists and has the correct permissions. If it doesn't exist, the task creates it with the specified permissions.
 
-```yaml
+yaml
 - name: Ensure /var/log exists
   ansible.builtin.file:
     path: /var/log
@@ -186,7 +186,7 @@ After applying updates and changes, it's important to log the results for future
 ### **Action Taken**:
 The playbook uses the `ansible.builtin.copy` module to save the results of the updates to a log file. This ensures that the outcome of the updates is documented.
 
-```yaml
+yaml
 - name: Log the updates results
   ansible.builtin.copy:
     content: "{{ update_result | to_nice_yaml }}"
@@ -200,7 +200,7 @@ Many system tasks and applications rely on the `/var/log` directory to store log
 ### **Action Taken**:
 The playbook includes a task to ensure the `/var/log` directory exists with the correct permissions.
 
-```yaml
+yaml
 - name: Ensure /var/log exists
   ansible.builtin.file:
     path: /var/log

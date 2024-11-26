@@ -1,0 +1,40 @@
+---
+- name: Automated Patch Management and Software Installation
+  hosts: all
+  become: yes
+  tasks:
+  - name: Update all packages to the latest version
+    ansible.builtin.yum:
+       name: "*"
+       state: latest
+    register: update_result
+
+  - name: Install required software
+    ansible.builtin.yum:
+       name: 
+         -  docker
+         -  nginx
+       state: present
+
+
+  - name: Restart services if necessary
+    ansible.builtin.systemd:
+      name: "{{ item }}"
+      state: restarted
+    loop: 
+       - docker
+       - nginx
+
+    when: update_result.changed 
+
+  - name: Ensure /var/log exits
+    ansible.builtin.file:
+      path: /var/log
+      state: directory
+      mode: '0755'  
+
+  - name: Log the updates results
+    ansible.builtin.copy:
+     content: "{{ update_result | to_nice_yaml }}"
+     dest: "/var/log/ansible_patch_{{ inventory_hostname }}.log"
+

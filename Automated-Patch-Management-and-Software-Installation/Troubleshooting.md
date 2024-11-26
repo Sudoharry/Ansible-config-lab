@@ -9,16 +9,11 @@ This guide documents the troubleshooting steps and practices for resolving issue
 3. [Correct Docker Repository Configuration](#3-correct-docker-repository-configuration)
 4. [Add Docker GPG Key](#4-add-docker-gpg-key)
 5. [Add Docker Repository](#5-add-docker-repository)
-6. [Ensure Proper Docker Installation](#6-ensure-proper-docker-installation)
-7. [Check Repository Availability](#7-check-repository-availability)
-8. [Manual Debugging of Package Installation](#8-manual-debugging-of-package-installation)
-9. [Troubleshoot Repository Signing Issues](#9-troubleshoot-repository-signing-issues)
-10. [Review System Logs and Output](#10-review-system-logs-and-output)
-11. [Validate Service Restart](#11-validate-service-restart)
-12. [Log the Update Results](#12-log-the-update-results)
-13. [Ensure Directory Existence](#13-ensure-directory-existence)
-14. [Use `dist-upgrade` Instead of `upgrade`](#14-use-dist-upgrade-instead-of-upgrade-optional)
-
+6. [Install Docker and Nginx](#6-install-docker-and-nginx)
+7. [Restart Services If Necessary](#7-restart-services-if-necessary)
+8. [Ensure /var/log Exists](#8-ensure-/var/log-exists)
+9. [Log the Update Results](#9-log-the-update-results)
+10. [Directory Creation for Logs](#10-directory-creation-for-logs)
 ---
 
 ## 1. Check Package Manager
@@ -177,47 +172,3 @@ yaml
     path: /var/log
     state: directory
     mode: '0755'
-
-## 11. Logging Update Results
-
-### **Issue**:
-After applying updates and changes, it's important to log the results for future reference, troubleshooting, or auditing. Without proper logging, it becomes challenging to verify what was updated or debug issues.
-
-### **Action Taken**:
-The playbook uses the `ansible.builtin.copy` module to save the results of the updates to a log file. This ensures that the outcome of the updates is documented.
-
-yaml
-- name: Log the updates results
-  ansible.builtin.copy:
-    content: "{{ update_result | to_nice_yaml }}"
-    dest: "/var/log/update_results_{{ ansible_date_time.date }}.log"
-
-## 12. Ensuring /var/log Directory Exists
-
-### **Issue**:
-Many system tasks and applications rely on the `/var/log` directory to store logs. If this directory is missing or incorrectly configured, it may lead to errors or loss of critical log information.
-
-### **Action Taken**:
-The playbook includes a task to ensure the `/var/log` directory exists with the correct permissions.
-
-yaml
-- name: Ensure /var/log exists
-  ansible.builtin.file:
-    path: /var/log
-    state: directory
-    mode: '0755'
-
-## 13. Logging Update Results
-
-### **Issue**:
-After executing updates or changes on the system, it's essential to log the results for troubleshooting, auditing, and future reference. Failure to capture update results may make debugging or verifying actions difficult.
-
-### **Action Taken**:
-The playbook includes a task to log the results of the update process to a file for documentation and analysis.
-
-```yaml
-- name: Log the update results
-  ansible.builtin.copy:
-    content: "{{ update_result | to_nice_yaml }}"
-    dest: /var/log/update_results.yml
-

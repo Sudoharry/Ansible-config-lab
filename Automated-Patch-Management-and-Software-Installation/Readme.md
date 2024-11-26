@@ -1,7 +1,9 @@
-# Troubleshooting Guide for Automated Patch Management and Software Installation (Docker & Nginx)
+# Automated Patch Management and Software Installation
 
-This guide documents the troubleshooting steps and practices for resolving issues while running an Ansible playbook to manage Docker and Nginx installations on Ubuntu-based systems.
-
+## Purpose
+ This playbook automates the patch management and software installation process across multiple Ubuntu-based systems. It ensures the systems are updated, necessary software is installed, and logs are created for auditing and troubleshooting.
+ 
+ ---
 ## Table of Contents
 
 1. [Introduction](#introduction)

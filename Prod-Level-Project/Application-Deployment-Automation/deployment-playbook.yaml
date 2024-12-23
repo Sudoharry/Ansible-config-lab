@@ -1,0 +1,90 @@
+---
+- name: Deploy web application
+  hosts: webservers
+  become: yes
+  vars:
+    myapppassword: "myapppassword"  # Define the password here
+    postgres_password: "myapppassword"
+
+
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Install Nginx
+      apt: name=nginx  state=present
+
+    - name: Start  Nginx
+      service: name=nginx state=started enabled=yes
+
+    - name: Install Python and pip
+      apt: name={{ item }} state=present
+      with_items:
+        - python3
+        - python3-pip
+
+    - name: Install virtualenv package
+      apt: name=python3-venv state=present
+
+    - name: Create virtual environment
+      command:
+        cmd: python3 -m venv /home/ubuntu/venv
+        creates: /home/ubuntu/venv
+
+    - name: Copy requirements.txt to remote server
+      copy:
+        src: /home/ubuntu/Ansible-config-lab/Prod-Level-Project/Application-Deployment-Automation/requirements.txt
+        dest: /home/ubuntu/requirements.txt
+
+
+    - name: Install application dependencies in virtual environment
+      ansible.builtin.pip:
+        requirements: /home/ubuntu/requirements.txt
+        virtualenv: /home/ubuntu/venv
+        extra_args:   --no-cache-dir
+
+    - name: Deploy application code
+      copy:
+        src: /home/ubuntu/Ansible-config-lab/Prod-Level-Project/Application-Deployment-Automation/app
+        dest: /var/www/html
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Restart Nginx
+      service: name=nginx state=restarted
+
+- name: Setup database
+  hosts: dbservers
+  become: yes
+
+  tasks:
+    - name: Install PostgreSQL
+      apt:
+        name: libpq-dev
+        state: present
+
+    - name: Ensure PostgreSQL is running
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Create database
+      community.postgresql.postgresql_db:
+        name: myapp
+        encoding: UTF8
+##      lc_collate: en_US.UTF-8
+##      lc_ctype: en_US.UTF-8
+        template: template0
+        login_user: postgres
+        login_password: "{{ myapppassword }}"
+
+    - name: Create database user
+      community.postgresql.postgresql_user:
+         name: myappuser
+         password: "{{ myapppassword }}"
+         priv: "ALL"
+         db: myapp
+         login_user: postgres
+         login_password: "{{ myapppassword }}"  # Same for login credentials

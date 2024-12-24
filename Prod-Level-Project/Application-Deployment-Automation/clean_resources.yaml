@@ -1,0 +1,61 @@
+---
+- name: Clean Temporary Files and Resources
+  hosts: all
+  become: yes
+  tasks:
+    - name: Remove temporary files
+      file:
+        path: /tmp
+        state: absent
+        recurse: yes
+      ignore_errors: yes
+
+    - name: Recreate the /tmp directory
+      file:
+        path: /tmp
+        state: directory
+        mode: '1777'
+
+    - name: Check if Docker is installed
+      command: which docker
+      register: docker_check
+      ignore_errors: yes
+
+    - name: Clear unused Docker containers
+      command: docker container prune -f
+      when: docker_check.rc == 0
+      ignore_errors: yes
+
+    - name: Clear unused Docker images
+      command: docker image prune -a -f
+      when: docker_check.rc == 0
+      ignore_errors: yes
+
+    - name: Remove unused package cache
+      command: apt-get clean
+      when: ansible_os_family == "Debian"
+
+    - name: Free up disk space by removing orphaned packages
+      command: apt-get autoremove -y
+      when: ansible_os_family == "Debian"
+
+    - name: Free pagecache, dentries, and inodes
+      shell: |
+        sync
+        echo 3 > /proc/sys/vm/drop_caches
+      ignore_errors: yes
+
+    - name: Find old logs
+      find:
+        paths: /var/log
+        age: 30d
+        recurse: yes
+        patterns: "*.log"
+      register: old_logs
+
+    - name: Delete old logs
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ old_logs.files }}"
+

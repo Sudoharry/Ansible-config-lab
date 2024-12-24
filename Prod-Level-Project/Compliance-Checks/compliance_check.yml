@@ -1,0 +1,59 @@
+---
+- name: Compliance check on production servers
+  hosts: prod_servers
+  become: yes
+  tasks:
+    - name: Check for missing security updates
+      shell: unattended-upgrade --dry-run -d
+      register: update_check_output
+    
+    - name: Display missing security updates
+      debug:
+        var: update_check_output.stdout_lines
+    
+    - name: Verify SSH configuration compliance
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+    
+    - name: Ensure UFW is installed
+      apt:
+        name: ufw
+        state: present
+    
+    - name: Ensure UFW is enabled
+      ufw:
+        state: enabled
+    
+    - name: Verify UFW default policy
+      ufw:
+        state: enabled
+        default: deny
+    
+    - name: Check for open ports
+      shell: ufw status numbered
+      register: ufw_status_output
+    
+    - name: Display UFW status
+      debug:
+        var: ufw_status_output.stdout_lines
+    
+    - name: Ensure password policies are enforced
+      lineinfile:
+        path: /etc/pam.d/common-password
+        regexp: '^password\s+requisite\s+pam_cracklib.so'
+        line: 'password requisite pam_cracklib.so retry=3 minlen=12 difok=3'
+        state: present
+    
+    - name: Ensure fail2ban is installed
+      apt:
+        name: fail2ban
+        state: present
+    
+    - name: Ensure fail2ban is running
+      service:
+        name: fail2ban
+        state: started
+        enabled: yes

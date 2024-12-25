@@ -1,0 +1,12 @@
+---
+- name: Create a new user
+  hosts: all
+  become: true
+  vars:
+    user_password: "{{ 'mypassword' | password_hash('sha512') }}"
+  tasks:
+    - name: Create a user with a  hashed password
+      user:
+        name:  devops_user
+        password: "{{ user_password }}"
+        state: present

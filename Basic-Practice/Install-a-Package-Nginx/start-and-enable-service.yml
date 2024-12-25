@@ -1,0 +1,11 @@
+---
+- name: Start and enable the service
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure Nginx is runnning
+      service:    # Specifies the Ansible module used to manage the services on the target hosts
+        name: nginx
+        state: started  # Ensure the service is in running state, If the services is stopped, this task will start it
+        enabled:  true  # Ensure the service is enabled to start automatically on system boot.
+

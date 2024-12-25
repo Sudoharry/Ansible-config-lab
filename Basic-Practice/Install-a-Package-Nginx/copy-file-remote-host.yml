@@ -1,0 +1,10 @@
+---
+- name: Copy a file to remote host
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy file to remote host
+      copy:
+       src: /path/to/source/file.conf
+       dest: /path/to/destination/file.conf
+       mode: '0644'

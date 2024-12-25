@@ -1,0 +1,14 @@
+---
+- name: Deploy an application
+  hosts: all
+  become: true
+  tasks:
+   - name: Install Apache2
+     apt:
+      name: apache2
+      state: present
+
+   - name: Copy the application files
+     copy:
+      src: /path/to/local/index.html
+      dest: /var/www/html/index.html

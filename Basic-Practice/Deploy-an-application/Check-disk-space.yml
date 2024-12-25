@@ -1,0 +1,13 @@
+---
+- name: Check disk space
+  hosts: all
+  become: true
+  tasks:
+    - name:  Check disk usage
+      shell: df -h | tail -1 | awk '{print $5}' | sed 's/%//'
+      register: disk_usage
+
+   - name: Fail if disk usage is more than 80%
+     fail:
+       msg: "Disk usage is critically high: {{ disk_usage.stdout }}%"
+     when:  disk_usage.stdout | int > 80

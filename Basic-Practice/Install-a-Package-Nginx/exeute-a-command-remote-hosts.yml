@@ -1,0 +1,7 @@
+---
+- name: Execute a command on remote host
+  hosts: all
+  become: true
+  tasks:
+    - name: Execute uptime command
+      command: uptime

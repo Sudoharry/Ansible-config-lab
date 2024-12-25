@@ -1,0 +1,5 @@
+# Ignore all .pem files
+*.pem
+
+# Optional: Exclude specific .pem files if needed
+#!important-file.pem

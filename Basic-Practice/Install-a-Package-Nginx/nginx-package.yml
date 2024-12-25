@@ -1,0 +1,10 @@
+---  ## This denotes the beginning of the YAMl file. It's not a mandatory but it's considered as a good practice to explicity indicates the start of the YAML document.
+- name: Install a Nginx Package    ## This defines the name of the playbook or the task. It describes the purpose of the playbook and provides the clarity when reading logs.
+  hosts: all  ## Specify the target node where this playbook will run.
+  become: true  ## This is necessary when installing the packages or performing tasks that requires the administration privileges. "sudo in Linux OS"
+  tasks:     ## Declare the list of tasks that will be executed sequentially on the target hosts.
+    -  name: Install Nginx   ## This is descriptive name of the specific tasks. It provides the clear log output so user can easily understand what task is doing.
+       apt:   ## The apt module is used to manage the package on system that use APT as their package manager (e.g Debian, Ubuntu)
+         name: Nginx  ## Indicates the name of the package to be installed, in this case i.e nginx.
+         state: present  ## it means "make sure the package is installed, but do nothing if it's already installed"
+
